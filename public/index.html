@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forge — Rockets, built and shared</title>
+  <meta name="description" content="Forge is a hangar for amateur rocketry. Upload your rocket build and compare height, weight and top speed with builders everywhere.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Forge home">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 2c3 2.6 4.5 6 4.5 10.2V17h-9v-4.8C7.5 8 9 4.6 12 2Z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10" r="1.8" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M7.5 14 4.5 17.5V19h3M16.5 14l3 3.5V19h-3M10 17v3.5M14 17v3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      <span>FORGE</span>
+    </a>
+    <nav class="topnav">
+      <a href="#hangar">Hangar</a>
+      <button class="btn btn-ghost" type="button" data-open-upload>Upload a rocket</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot"></span> Open hangar &middot; amateur rocketry</p>
+        <h1>Rockets,<br>built <em>and</em><br>shared.</h1>
+        <p class="lede">Post the rocket you built in your garage, club workshop or dorm room. Every build gets a spec card with its photo, height, weight and top speed, so you can see how it stacks up against the rest of the fleet.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" type="button" data-open-upload>
+            Upload your build
+            <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+          </button>
+          <a class="btn btn-ghost" href="#hangar">Browse the hangar</a>
+        </div>
+      </div>
+
+      <figure class="hero-art" aria-hidden="true">
+        <img src="/main.webp" alt="">
+        <div class="hero-art-fade"></div>
+        <span class="tag tag-a">SHEET 01 / FLEET OVERVIEW</span>
+        <span class="tag tag-b">SCALE 1:1 &middot; REV C</span>
+      </figure>
+
+      <dl class="readout" id="readout">
+        <div><dt>Rockets in hangar</dt><dd data-stat="count">&mdash;</dd></div>
+        <div><dt>Fastest build</dt><dd data-stat="fastest">&mdash;</dd></div>
+        <div><dt>Tallest build</dt><dd data-stat="tallest">&mdash;</dd></div>
+        <div><dt>Combined height</dt><dd data-stat="stack">&mdash;</dd></div>
+      </dl>
+    </section>
+
+    <section class="hangar" id="hangar" aria-labelledby="hangar-title">
+      <div class="hangar-head">
+        <div>
+          <p class="eyebrow">Section 02</p>
+          <h2 id="hangar-title">The Hangar</h2>
+        </div>
+        <div class="sort" role="group" aria-label="Sort rockets">
+          <span class="sort-label">Sort</span>
+          <button type="button" class="chip is-active" data-sort="newest">Newest</button>
+          <button type="button" class="chip" data-sort="fastest">Fastest</button>
+          <button type="button" class="chip" data-sort="tallest">Tallest</button>
+          <button type="button" class="chip" data-sort="heaviest">Heaviest</button>
+        </div>
+      </div>
+
+      <div class="grid" id="grid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>FORGE &middot; Rockets, built and shared</span>
+    <span class="mono">Fly safe. Follow your local launch code.</span>
+  </footer>
+
+  <dialog class="upload" id="upload" aria-labelledby="upload-title">
+    <form id="upload-form" novalidate>
+      <header class="upload-head">
+        <div>
+          <p class="eyebrow">New entry</p>
+          <h2 id="upload-title">Add a rocket to the hangar</h2>
+        </div>
+        <button type="button" class="icon-btn" data-close-upload aria-label="Close">
+          <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15" stroke="currentColor" stroke-width="1.8"/></svg>
+        </button>
+      </header>
+
+      <div class="upload-body">
+        <label class="dropzone" id="dropzone">
+          <input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" required>
+          <img id="preview" alt="" hidden>
+          <span class="dropzone-hint">
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v4h16v-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            <strong>Drop a photo here</strong>
+            <span>or click to choose &middot; JPG, PNG, WebP &middot; max 4 MB</span>
+          </span>
+          <small class="field-error" data-error="image"></small>
+        </label>
+
+        <div class="fields">
+          <div class="field span-2">
+            <label for="f-name">Rocket name</label>
+            <input id="f-name" name="name" maxlength="80" placeholder="e.g. Kestrel IV" required>
+            <small class="field-error" data-error="name"></small>
+          </div>
+          <div class="field span-2">
+            <label for="f-builder">Built by</label>
+            <input id="f-builder" name="builder" maxlength="80" placeholder="Your name or team" required>
+            <small class="field-error" data-error="builder"></small>
+          </div>
+          <div class="field">
+            <label for="f-height">Height <span class="unit">m</span></label>
+            <input id="f-height" name="heightM" type="number" step="any" min="0" inputmode="decimal" placeholder="1.42" required>
+            <small class="field-error" data-error="heightM"></small>
+          </div>
+          <div class="field">
+            <label for="f-weight">Weight <span class="unit">kg</span></label>
+            <input id="f-weight" name="weightKg" type="number" step="any" min="0" inputmode="decimal" placeholder="2.85" required>
+            <small class="field-error" data-error="weightKg"></small>
+          </div>
+          <div class="field">
+            <label for="f-speed">Top speed <span class="unit">km/h</span></label>
+            <input id="f-speed" name="topSpeedKmh" type="number" step="any" min="0" inputmode="decimal" placeholder="611" required>
+            <small class="field-error" data-error="topSpeedKmh"></small>
+          </div>
+          <div class="field">
+            <label for="f-apogee">Apogee <span class="unit">m &middot; optional</span></label>
+            <input id="f-apogee" name="apogeeM" type="number" step="any" min="0" inputmode="decimal" placeholder="1287">
+            <small class="field-error" data-error="apogeeM"></small>
+          </div>
+          <div class="field span-2">
+            <label for="f-motor">Motor <span class="unit">optional</span></label>
+            <input id="f-motor" name="motor" maxlength="40" placeholder="e.g. Aerotech H128W">
+          </div>
+          <div class="field span-2">
+            <label for="f-desc">Build notes <span class="unit">optional</span></label>
+            <textarea id="f-desc" name="description" rows="3" maxlength="600" placeholder="Airframe, recovery, what went right, what blew up..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <footer class="upload-foot">
+        <p class="form-status" id="form-status" role="status"></p>
+        <button type="button" class="btn btn-ghost" data-close-upload>Cancel</button>
+        <button type="submit" class="btn btn-primary" id="submit-btn">Launch it</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <template id="card-tpl">
+    <article class="card">
+      <div class="card-media">
+        <img loading="lazy" alt="">
+        <span class="card-serial"></span>
+        <span class="crop crop-tl"></span><span class="crop crop-tr"></span><span class="crop crop-bl"></span><span class="crop crop-br"></span>
+      </div>
+      <div class="card-body">
+        <header class="card-head">
+          <h3 class="card-name"></h3>
+          <p class="card-builder"></p>
+        </header>
+        <ul class="stats">
+          <li class="stat" data-key="heightM"><span class="stat-label">Height</span><span class="stat-value"></span><span class="bar"><i></i></span></li>
+          <li class="stat" data-key="weightKg"><span class="stat-label">Weight</span><span class="stat-value"></span><span class="bar"><i></i></span></li>
+          <li class="stat" data-key="topSpeedKmh"><span class="stat-label">Top speed</span><span class="stat-value"></span><span class="bar"><i></i></span></li>
+        </ul>
+        <p class="card-desc"></p>
+        <footer class="card-foot">
+          <span class="pill pill-motor"></span>
+          <span class="pill pill-apogee"></span>
+          <time class="card-date"></time>
+        </footer>
+      </div>
+    </article>
+  </template>
+
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
